@@ -1,0 +1,11 @@
+﻿@page "/ex"
+@inherits ExperimentBase
+<h3>experiment</h3>
+
+<h1>@Name</h1>
+
+<input @bind="Name" @bind:event="oninput"/>
+<br />
+<textarea @bind="Description" style="width:500px" @bind:event="oninput"></textarea>
+<br />
+<h6>@Description.Length</h6>

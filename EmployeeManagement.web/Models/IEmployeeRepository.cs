@@ -10,6 +10,7 @@ namespace EmployeeManagement.web.Models
         Task<Employee> AddEmployee(Employee employee);
         Task<Employee> UpdateEmployee(Employee employee);
         Task<Employee> DeleteEmployee(int employeeId);
+        Task<IEnumerable<Employee>> Search(string name, Gender? gender);
 
     }
 }

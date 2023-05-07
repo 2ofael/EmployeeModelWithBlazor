@@ -1,69 +1,39 @@
-﻿using EmployeeModel;
+﻿using EmployeeManagement.Services;
+using EmployeeModel;
 using Microsoft.AspNetCore.Components;
+using Microsoft.VisualBasic;
+
 
 namespace EmployeeManagement.Pages
 {
-    public class EmployeeListBase:ComponentBase
+    public class EmployeeListBase : ComponentBase
     {
+        [Inject]
+        public IEmployeeServices employeeServices { get; set; }
         public IEnumerable<Employee> Employees { get; set; }
 
-        protected override Task OnInitializedAsync()
+        public bool Footer { get; set; } = true;
+
+        protected override async Task OnInitializedAsync()
         {
-            LoadEmployees();
-            return base.OnInitializedAsync();
-        }
+            //   LoadEmployees(); //
+            //
+            HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:7109/") };
 
-        private void LoadEmployees()
+            var result = await employeeServices.GetEmployees(); //await client.GetFromJsonAsync<List<Employee>>("api/Employees");
+            Employees = result.ToList();
+        }
+        protected int SelectedEmployeesCount { get; set; } = 0;
+        protected void EmployeeSelectionChanged(bool isSelected)
         {
-            Employee e1 = new Employee
+            if (isSelected)
             {
-                EmployeeId = 1,
-                FirstName = "John",
-                LastName = "Hastings",
-                Email = "David@pragimtech.com",
-                DateOfBrith = new DateTime(1980, 10, 5),
-                Gender = Gender.Male,
-                DepartmentId = 1,
-                PhotoPath = "images/jhon.jpg"
-            };
+                SelectedEmployeesCount++;
+            }
+            else
+            { SelectedEmployeesCount--; }
 
-            Employee e2 = new Employee
-            {
-                EmployeeId = 2,
-                FirstName = "Sam",
-                LastName = "Galloway",
-                Email = "Sam@pragimtech.com",
-                DateOfBrith = new DateTime(1981, 12, 22),
-                Gender = Gender.Male,
-                DepartmentId = 2,
-                PhotoPath = "images/sam.jpg"
-            };
-
-            Employee e3 = new Employee
-            {
-                EmployeeId = 3,
-                FirstName = "Mary",
-                LastName = "Smith",
-                Email = "mary@pragimtech.com",
-                DateOfBrith = new DateTime(1979, 11, 11),
-                Gender = Gender.Female,
-                DepartmentId =3,
-                PhotoPath = "images/marry.jpg"
-            };
-
-            Employee e4 = new Employee
-            {
-                EmployeeId = 3,
-                FirstName = "Sara",
-                LastName = "Longway",
-                Email = "sara@pragimtech.com",
-                DateOfBrith = new DateTime(1982, 9, 23),
-                Gender = Gender.Female,
-                DepartmentId = 4,
-                PhotoPath = "images/sara.png"
-            };
-
-            Employees = new List<Employee> { e1, e2, e3, e4 };
         }
-        }
+    }
+        
 }

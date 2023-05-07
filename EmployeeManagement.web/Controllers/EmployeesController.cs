@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.web.Models;
 using EmployeeModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace EmployeeManagement.web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> GetEmployees()
         {
             try
@@ -114,6 +116,26 @@ namespace EmployeeManagement.web.Controllers
 
             }
 
+        }
+        [HttpGet("{search}")]
+        public async Task<ActionResult<IEnumerable<Employee>>> Search(string name, Gender ? gender)
+        {
+            try
+            {
+             var result =    await employeeRepository.Search(name,gender);
+            if(result.Any())
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Errorret");
+
+
+            }
         }
 
     }
