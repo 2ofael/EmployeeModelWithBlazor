@@ -31,7 +31,9 @@ namespace EmployeeManagement.web.Controllers
             }
 
         }
+      
         [HttpGet("{Id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Employee>> GetEmployee(int Id)
         {
             try
@@ -48,7 +50,7 @@ namespace EmployeeManagement.web.Controllers
             }
 
         }
-        [HttpPost]
+      
         public async Task<ActionResult<Employee>> CreateEmployee(Employee employee)
         {
             try
@@ -75,7 +77,7 @@ namespace EmployeeManagement.web.Controllers
             }
             return Ok();
         }
-
+  
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Employee>> UpdateEmployee(int id ,  Employee emp)
         {

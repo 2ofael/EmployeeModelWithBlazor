@@ -1,6 +1,7 @@
 ﻿using EmployeeModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -45,15 +46,29 @@ namespace EmployeeManagement.web.Models
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, signInModel.Email),
+              
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            var user = await _userManager.FindByEmailAsync(signInModel.Email);
+            var Roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in Roles)
+            {
+                authClaims.Append(new Claim(ClaimTypes.Role, role));
+            }
+
+
             var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+
+            
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddDays(1),
                 claims: authClaims,
+                
                 signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
                 );
 
